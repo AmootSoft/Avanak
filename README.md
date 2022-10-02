@@ -27,6 +27,20 @@ result >= 0  عملیات موفق آمیز بوده و مبلغ ریالی با
 
 در غیر اینصورت کد خطای احراز میباشد
 ```
+#### نمونه کد GetCredit (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+decimal result = client.GetCredit(UserName, Password);
+
+if (result >= 0)
+{
+    //خروجی
+}
+```
 ### متد ارسال رمز یکبار مصرف (SendOTP)
 از طریق این متد می توانید پیام صوتی با رمز یکبار مصرف را به صورت فوری به شماره انتخابی خود ارسال نمایید .
 #### پارامترهای ورودی SendOTP
@@ -36,7 +50,7 @@ result >= 0  عملیات موفق آمیز بوده و مبلغ ریالی با
 |password|String *|رمز عبور|
 |Length|Int *|طول کد|
 |number|String *|شماره همراه یا ثابت|
-|text|String |متن|
+|text|String |کد دلخواه خود را وارد نمایید حداقل 4 و حداکثر 8 رقم|
 |serverid|Int |کد سرور (خودکار=0)|
 #### خروجی SendOTP (String)
 ```html
@@ -50,6 +64,19 @@ result > 0 عملیات موفق آمیز بوده و کد ارسال سریع "
  "-3" عدم موجودی کافی
 "امکان اتصال به سرور وجود ندارد "
 "خطایی رخ داده است "
+```
+#### نمونه کد SendOTP (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int Length = 5;
+string number = "09120000000";
+string text = "";
+int ServerId = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+string result = client.SendOTP(UserName, Password, Length, number, text, ServerId);
 ```
 ### متد آپلود فایل صوتی (UploadMessage)
 از طریق این متد می توانید فایل صوتی خود را در گالری اصوات خود آپلود نمایید.
@@ -71,6 +98,24 @@ result > 0 عملیات موفق آمیز بوده و کد فایل صوتی "me
 -20 خطا در تبدیل
 -30 خطا در تبدیل
 -500 خطای سرور
+```
+#### نمونه کد UploadMessage (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string title = "صوت جدید";
+byte[] fileBytes = System.IO.File.ReadAllBytes("C:\\MyAudio.mp3");
+bool persist = false;
+string CallFromMobile = string.Empty;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+int messageId = client.UploadMessage(UserName, Password, title, fileBytes, persist, CallFromMobile);
+
+if (messageId >= 0)
+{
+    //خروجی
+}
 ```
 ### متد تولید صوت آواخوان (GenerateTTS2)
 از طریق این متد می توانید متن مورد نظر خود را بصورت فایل صوتی در گالری اصوات خود ذخیره نمایید.
@@ -95,6 +140,25 @@ id = -5 طول متن بیش از حد مجاز (1000 کاراکتر)
 id = -3 عدم اعتبار کافی برای تولید صوت
 id = -4  خطا در تولید فایل صوتی
 id = -2  خطا در تولید فایل صوتی
+```
+#### نمونه کد GenerateTTS2 (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+string speaker = "male";
+string title = "صوت جدید";
+string text = "این یک صوت ایجاد شده آزمایشی توسط آواخوان می باشد";
+string CallFromMobile = string.Empty;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GenerateTTS2(UserName, Password, speaker, text, title, CallFromMobile);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد ایجاد کمپین (CreateCampaign)
 از طریق این متد می توانید با وارد کردن کد فایل صوتی و شماره و زمان شروع و پایان ، پیام های خود را به شماره یا شماره های انتخابی ارسال نمایید.
@@ -131,6 +195,40 @@ result > 0 عملیات موفق آمیز بوده و کد کمپین "campaignI
 -74 خطا در دریافت شماره های ناحیه انتخابی
 -75 مقادیر بطور کلی صحیح نمیباشد
 ```
+#### نمونه کد CreateCampaign (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+string numbers = "09120000000,09150000000,02100000000";
+string title = "لیست ارسال تست";
+int maxtrycount = 1;
+int minuteBetweenTries = 60;
+
+string startDate = "2022-09-01";
+string startTime = "12:00";
+
+string endDate = "2022-09-01";
+string endTime = "15:00";
+
+int messageId = 9999;
+bool removeInvalids = true;
+
+int serverid = 0;
+bool autostart = true;
+bool vote = false;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var CampaignId = client.CreateCampaign(UserName, Password, title, numbers, maxtrycount, minuteBetweenTries,
+startDate, startTime, endDate, endTime,
+messageId, removeInvalids, serverid, autostart, vote);
+
+if (CampaignId >= 0)
+{
+    //خروجی
+}
+```
 ### متد ارسال سریع (QuickSend)
 از طریق این متد می توانید با وارد کردن کد فایل صوتی و شماره ، یک پیام خود را به شماره انتخابی ارسال سریع نمایید.
 #### پارامترهای ورودی QuickSend
@@ -154,6 +252,25 @@ result > 0 عملیات موفق آمیز بوده و کد ارسال سریع "
 -8 کد فایل صوتی اشتباه میباشد
 -71 مدت ضبط صدا غیرمجاز میباشد
 -72 عدم مجوز ضبط صدا
+```
+#### نمونه کد QuickSend (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+int messageId = 9999;
+string number = "09120000000";
+bool vote = false;
+int serverid = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var quickSendId = client.QuickSend(UserName, Password, messageId, number, vote, serverid);
+
+if (quickSendId >= 0)
+{
+    //خروجی
+}
 ```
 ### متد ارسال سریع با آواخوان (QuickSendWithTTS)
 از طریق این متد می توانید با وارد کردن متن و شماره ، یک پیام خود را به شماره انتخابی ارسال سریع نمایید.
@@ -185,6 +302,26 @@ result > 0 عملیات موفق آمیز بوده و کد ارسال سریع "
 -71 مدت ضبط صدا غیرمجاز میباشد
 -72 عدم مجوز ضبط صدا
 ```
+#### نمونه کد QuickSendWithTTS (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+string number = "09120000000";
+string text = "این یک صوت ایجاد شده آزمایشی توسط آواخوان می باشد";
+bool vote = false;
+int serverid = 0;
+string CallFromMobile = "";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var quickSendId = client.QuickSendWithTTS(UserName, Password, text, number, vote, serverid, CallFromMobile);
+
+if (quickSendId >= 0)
+{
+    //خروجی
+}
+```
 ### متد وضعیت ارسال سریع (GetQuickSend)
 از طریق این متد می توانید با استفاده از "کد ارسال سریع" ، مشخصات کامل آن را درافت نمایید.
 #### پارامترهای ورودی GetQuickSend
@@ -209,6 +346,22 @@ vote = عدد نظرسنجی (-1= بدون نظرسنجی)
 }
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetQuickSend (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int quickSendId = 0;
+decimal Price = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetQuickSend(UserName, Password, quickSendId, ref Price);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد شروع کمپین (StartCampaign)
 از طریق این متد می توانیدبا استفاده از "کد کمپین" ، کمپین موردنظر خود را که در حالت انتظار یا توقف ثبت نموده اید را در زمان مورد نظر شروع به ارسال نمایید
@@ -236,6 +389,33 @@ result > 0 عملیات موفق آمیز بوده و کد کمپین "campaignI
 -50 جهت شروع ارسال اعتبار کافی نیست
 -60 کد فایل صوتی انتخاب شده صحیح نیست
 ```
+#### نمونه کد StartCampaign (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+long CampaignId = 9999;
+
+string title = "لیست ارسال تست";
+int maxtrycount = 1;
+int minuteBetweenTries = 60;
+
+string startDate = "2022-09-01";
+string startTime = "12:00";
+
+string endDate = "2022-09-01";
+string endTime = "15:00";
+
+int serverid = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.StartCampaign(UserName, Password, CampaignId, title, minuteBetweenTries, maxtrycount,  startDate, startTime, endDate, endTime, serverid);
+
+if (result >= 0)
+{
+    //خروجی
+}
+```
 ### متد توقف کمپین (StopCampaign)
 از طریق این متد می توانید با استفاده از "کد کمپین" ، کمپین موردنظر خود را که در حال ارسال میباشد را متوقف نمایید.
 #### پارامترهای ورودی StopCampaign
@@ -249,6 +429,22 @@ result > 0 عملیات موفق آمیز بوده و کد کمپین "campaignI
 result = true عملیات موفق آمیز بوده و کمپین مورد نظر خود در حالت توقف قرار گرفت
 
 result = false عملیات ناموفق
+```
+#### نمونه کد StopCampaign (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int campaignId = 0;
+decimal Price = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.StopCampaign(UserName, Password, campaignId);
+
+if (result == true)
+{
+    //خروجی
+}
 ```
 ### متد وضعیت کمپین (GetCampaignById)
 از طریق این متد می توانید با استفاده از "کد کمپین" ، مشخصات آن را دریافت نمایید.
@@ -292,6 +488,21 @@ EndTime = زمان پایان,
 
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetCampaignById (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int campaignId = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignById(UserName, Password, campaignId);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد لیست کمپین ها بر اساس تاریخ (GetCampaignsByDate)
 از طریق این متد می توانید لیست کمپین ها را در بازه زمانی مورد نظر خود که ایجاد نموده اید را دریافت نمایید.
@@ -337,6 +548,22 @@ EndTime = زمان پایان,
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد GetCampaignsByDate (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string fromDate = "2022-09-01";
+string toDate = "2022-09-10";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignsByDate(UserName, Password, fromDate, toDate);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد لیست شماره کمپینها براساس کد کمپین (GetCampaignNumbersByCampaignId)
 از طریق این متد می توانید با استفاده از "کد کمپین" ، لیست شماره ها و وضعیت آنها را دریافت نمایید.
 #### پارامترهای ورودی GetCampaignNumbersByCampaignId
@@ -364,6 +591,21 @@ RequestId = ,
 }
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetCampaignNumbersByCampaignId (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int campaignId = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumbersByCampaignId(UserName, Password, campaignId);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد لیست شماره کمپینها براساس کد صوت (GetCampaignNumbersByMessageId)
 از طریق این متد می توانید با استفاده از "کد صوت" ، لیست شماره های کمپین و وضعیت آنها را دریافت نمایید.
@@ -395,6 +637,23 @@ RequestId = ,
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد GetCampaignNumbersByMessageId (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int messageId = 0;
+int lastid = 9999;
+int count = 10;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumbersByMessageId(UserName, Password, messageId, lastid, count);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد لیست شماره کمپینها بر اساس زمان ارسال (GetCampaignNumbersBySendDate)
 از طریق این متد می توانید لیست شماره کمپین ها را در بازه زمانی مورد نظر خود که ایجاد نموده اید را دریافت نمایید.
 #### پارامترهای ورودی GetCampaignNumbersBySendDate
@@ -424,6 +683,22 @@ RequestId = ,
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد GetCampaignNumbersBySendDate (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string fromDate = "2022-09-01";
+string toDate = "2022-09-10";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumbersBySendDate(UserName, Password, fromDate, toDate);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد شماره کمپین بر اساس کد (GetCampaignNumbersBySubscribeId)
 از طریق این متد می توانید با استفاده از "کد شماره کمپین" ، مشخصات آن را دریافت نمایید.
 #### پارامترهای ورودی GetCampaignNumbersBySubscribeId
@@ -451,6 +726,21 @@ RequestId = ,
 }
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetCampaignNumbersBySubscribeId (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+long subscibeid = 999999;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumbersBySubscribeId(UserName, Password, subscibeid);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد لیست شماره کمپینها بر اساس کد (GetCampaignNumbersDataByIds)
 از طریق این متد می توانید با استفاده از لیستی از "کد شماره کمپین" ، مشخصات آنها را دریافت نمایید.
@@ -480,6 +770,21 @@ RequestId = ,
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد GetCampaignNumbersDataByIds (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string CampaignNumberIds = "999999,88888";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumbersDataByIds(UserName, Password, CampaignNumberIds);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد وضعیت شماره کمپین (GetCampaignNumberStatusById)
 از طریق این متد می توانید با استفاده از "کد شماره کمپین" ، ,وضعیت آن را دریافت نمایید.
 #### پارامترهای ورودی GetCampaignNumberStatusById
@@ -492,6 +797,21 @@ RequestId = ,
 ```html
 result > 0 عملیات موفقیت آمیز و معادل کد وضعیت شماره میباشد
 در غیر این صورت null یا کد خطای احراز میباشد
+```
+#### نمونه کد GetCampaignNumberStatusById (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+long CampaignNumberId = 999999;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumberStatusById(UserName, Password, CampaignNumberId);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد لیست وضعیت شماره کمپین (GetCampaignNumbersStatusByIds)
 از طریق این متد می توانید با استفاده از لیستی از "کد شماره کمپین" ، وضعیت آنها را دریافت نمایید.
@@ -509,6 +829,21 @@ result > 0 عملیات موفقیت آمیز و معادل کد وضعیت شم
  وعدد -10 به معنای اینکه حداکثر تعداد کدها 100 میباشد
 و عدد -20به معنای خطای سرور میباشد
 و اگر null باشد مه معنای خطای احراز است
+```
+#### نمونه کد GetCampaignNumbersStatusByIds (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string CampaignNumberIds = "999999,88888";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetCampaignNumbersStatusByIds(UserName, Password, CampaignNumberIds);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد ایجاد کمپین بر اساس مکان (CreateCampaignGIS)
 از طریق این متد می توانید با وارد کردن کد مکان و کد فایل صوتی و شماره و زمان شروع و پایان ، پیام های خود را به شماره یا شماره های انتخابی ارسال نمایید.
@@ -568,6 +903,25 @@ result = -3 عدم اعتبار کافی برای تولید صوت
 result = -4 خطا در تولید فایل صوتی
 result = -2 خطا در تولید فایل صوتی
 ```
+#### نمونه کد GenerateTTS (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+string speaker = "male";
+string title = "صوت جدید";
+string text = "این یک صوت ایجاد شده آزمایشی توسط آواخوان می باشد";
+string CallFromMobile = string.Empty;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GenerateTTS(UserName, Password, speaker, text, title, CallFromMobile);
+
+if (result >= 0)
+{
+    //خروجی
+}
+```
 ### متد آپلود فایل صوتی بصورت Base64 (UploadMessageBase64)
 از طریق این متد می توانید فایل صوتی خود را که بصورت Base64 کدگذاری شده است در گالری اصوات خود آپلود نمایید.
 #### پارامترهای ورودی UploadMessageBase64
@@ -603,6 +957,21 @@ result > 0 عملیات موفق آمیز بوده و کد فایل صوتی "me
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد DownloadMessage (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int messageId = 999999;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.DownloadMessage(UserName, Password, messageId);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد حذف فایل صوتی (DeleteMessage)
 از طریق این متد می توانید با استفاده از "کد صوت" ، فایل صوتی خود را از گالری اصوات حذف نمایید.
 #### پارامترهای ورودی DeleteMessage
@@ -616,6 +985,21 @@ result > 0 عملیات موفق آمیز بوده و کد فایل صوتی "me
 result = true عملیات موفق آمیز بوده و فایل صوتی مورد نظر خود را حذف نموده اید
 
 result = false عملیات ناموفق
+```
+#### نمونه کد DeleteMessage (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int messageId = 999999;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.DeleteMessage(UserName, Password, messageId);
+
+if (result ==true)
+{
+    //خروجی
+}
 ```
 ### متد مشخصات فایل صوتی (GetMessage)
 از طریق این متد می توانید با استفاده از "کد صوت" ، مشخصات کامل فایل صوتی خود را دریافت نمایید.
@@ -646,6 +1030,21 @@ CreateDate = تاریخ زمان ایجاد به میلادی
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد GetMessage (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+int messageId = 999999;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetMessage(UserName, Password, messageId);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد لیست مشخصات فایل صوتی (GetMessages)
 از طریق این متد می توانید لیست همه اصوات گالری خود را با مشخصات کامل دریافت نمایید.
 #### پارامترهای ورودی GetMessages
@@ -673,6 +1072,20 @@ CreateDate = تاریخ زمان ایجاد به میلادی
 3=در انتظار تائید تلفنی
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetMessages (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetMessages(UserName, Password);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد لیست فایلهای صوتی بر اساس صفحه بندی (GetMessagesByPage)
 از طریق این متد می توانید لیست همه اصوات گالری خود را بصورت صفحه بندی با مشخصات کامل دریافت نمایید.
@@ -705,6 +1118,24 @@ CreateDate = تاریخ زمان ایجاد به میلادی
 3=در انتظار تائید تلفنی
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetMessagesByPage (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+bool showPersist = true;
+int count = 50;
+int currentpage = 0;
+string order = "desc";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetMessagesByPage(UserName, Password, showPersist, count, currentpage, order);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد دریافت تعرفه (GetPrices)
 از طریق این متد می توانید کامل تعرفه خود را دریافت نمایید .
@@ -740,6 +1171,20 @@ Title = عنوان گروه قیمت
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
 ```
+#### نمونه کد GetPrices (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetPrices(UserName, Password);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد مشخصات حساب کاربری (GetProfile)
 از طریق این متد می توانید مشخصات حساب کاربری خود را دریافت نمایید .
 #### پارامترهای ورودی GetProfile
@@ -760,6 +1205,20 @@ ExpireDate=تاریخ انقضاء به شمسی
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت Result کد خطای احراز میباشد
 ```
+#### نمونه کد GetProfile (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetProfile(UserName, Password);
+
+if (result != null)
+{
+    //خروجی
+}
+```
 ### متد دریافت تاریخ انقضاء (GetExpirationDate)
 از طریق این متد می توانید تاریخ انقضاء حساب کاربری خود بصورت شمسی را دریافت نمایید .
 #### پارامترهای ورودی GetExpirationDate
@@ -773,6 +1232,20 @@ ExpireDate=تاریخ انقضاء به شمسی
 اگر پنل دائمی باشد تاریخ ثابت 1500/01/01 دریافت خواهید کرد
 
 در غیر اینصورت کد خطای احراز میباشد
+```
+#### نمونه کد GetExpirationDate (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetExpirationDate(UserName, Password);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد مجموع هزینه در بازه زمانی (GetTotalCostByDate)
 از طریق این متد می توانید مجموع هزینه ارسال های کمپین خود را در بازه زمانی مشخص بصورت مبلغ به ریال دریافت نمایید .
@@ -788,6 +1261,22 @@ ExpireDate=تاریخ انقضاء به شمسی
 result >= 0 عملیات موفق آمیز بوده و مبلغ ریالی مجموع هزینه ارسال را نشان میدهد
 
 در غیر اینصورت کد خطای احراز میباشد
+```
+#### نمونه کد GetTotalCostByDate (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string fromDate = "2022-09-01";
+string toDate = "2022-09-10";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetTotalCostByDate(UserName, Password, fromDate, toDate);
+
+if (result >= 0)
+{
+    //خروجی
+}
 ```
 ### متد لیست تراکنش های اعتباری (GetTransactions)
 از طریق این متد می توانید لیست 1000 تراکنش اعتباری اخیر را دریافت نمایید
@@ -806,6 +1295,20 @@ Description=متن توضیحات
 }
 
 در صورتیکه عملیات موفق باشد خروجی دریافت میکنید در غیر اینصورت null دریافت خواهید کرد
+```
+#### نمونه کد GetTransactions (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.GetTransactions(UserName, Password);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
 ### متد ایجاد تماس امن (MakeSecureCall)
 از طریق این متد میتوان با دو شماره تلفن بدون مشخص بدون شماره آنها تماس برقرار کرد
@@ -829,6 +1332,24 @@ result > 0 عملیات موفق آمیز بوده و کد کمپین "campaignI
 -5 عدم مجوز تماس امن
 -2 کد سرور اشتباه میباشد
 -3 عدم موجودی حداقلی (علی الحساب) 10000 ریال
+```
+#### نمونه کد MakeSecureCall (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string srcNumber = "09120000000";
+string dstNumber = "09150000000";
+int holdMessageId = 0;
+int serverId = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var campaignId = client.MakeSecureCall(UserName, Password, srcNumber, dstNumber, holdMessageId, serverId);
+
+if (campaignId > 0)
+{
+    //خروجی
+}
 ```
 ### متد ارسال OCV (SendOCV)
 اعتبار سنجی با یک کلیک
@@ -857,4 +1378,21 @@ SendId=کد ارسال سریع (quickSendId)
 -4 خطا در تولید فایل صوتی
 -7 خطا در تولید فایل صوتی
 -8 خطای سرور
+```
+#### نمونه کد SendOCV (C#)
+```csharp
+string UserName = "MyUserName";
+string Password = "MyPassword";
+string number = "09120000000";
+string callBackUrl = "http://mysite.com/OCVCallBack?number=09120000000";
+int serverId = 0;
+
+ServiceReference1.WebService3SoapClient client = new ServiceReference1.WebService3SoapClient();
+
+var result = client.SendOCV(UserName, Password, number, callBackUrl, serverId);
+
+if (result != null)
+{
+    //خروجی
+}
 ```
